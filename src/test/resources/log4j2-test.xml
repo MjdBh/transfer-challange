@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d %-5level [%thread] %logger{0}: %msg%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="com.revolut.challenge" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="org.jooq.Constants" level="debug"/>
+        <!-- Log database queries -->
+        <Logger name="org.jooq.tools.LoggerListener" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>

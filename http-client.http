@@ -1,0 +1,54 @@
+## Create a new account
+POST http://{{host}}{{context}}accounts
+Accept: */*
+Cache-Control: no-cache
+
+{"currency":"USD"}
+
+#### Get account information
+GET http://{{host}}{{context}}/accounts/d00035af-46e6-4ba4-bf90-f6718bd49ab2
+
+### Top-up account balance
+
+POST http://{{host}}{{context}}/accounts/deposit
+Accept: */*
+Cache-Control: no-cache
+
+{
+  "transactionId":"1",
+  "accountNumber":"d00035af-46e6-4ba4-bf90-f6718bd49ab2",
+  "amount": 2000
+
+}
+
+### Widthraw account balance
+
+POST http://{{host}}{{context}}/accounts/withdraw
+Accept: */*
+Cache-Control: no-cache
+
+
+{
+  "transactionId":"2",
+  "accountNumber":"d00035af-46e6-4ba4-bf90-f6718bd49ab2",
+  "amount": 2000
+}
+
+### Transfer money between accounts
+POST http://{{host}}{{context}}/accounts/transfer
+Accept: */*
+Cache-Control: no-cache
+
+{
+  "transactionId":"3",
+  "fromAccount":"d00035af-46e6-4ba4-bf90-f6718bd49ab2",
+  "toAccount":"a9b26205-002d-4ce2-89b9-6049c4d0c0bf",
+  "amount": 10
+}
+
+### Account transactions list
+GET http://{{host}}{{context}}/accounts/a9b26205-002d-4ce2-89b9-6049c4d0c0bf/transaction
+Accept: */*
+Cache-Control: no-cache
+
+###

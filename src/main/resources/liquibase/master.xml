@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <property name="now" value="now()" dbms="h2"/>
+    <property name="now" value="now()" dbms="mysql"/>
+    <property name="floatType" value="float4" dbms="h2"/>
+    <property name="clobType" value="clob" dbms="h2"/>
+    <property name="uuidType" value="varchar(36)" dbms="h2"/>
+
+    <include file="liquibase/changelogs/1_initial_schema.xml" relativeToChangelogFile="false"/>
+
+</databaseChangeLog>
