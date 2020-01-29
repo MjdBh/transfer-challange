@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 
@@ -43,6 +44,6 @@ public class AccountControllerIT extends BaseIT {
                 log().all().
                 assertThat().
                 statusCode(400).
-                body("message",equalTo("Invalid body")) ;
+                body("message",containsString("Invalid body")) ;
     }
 }

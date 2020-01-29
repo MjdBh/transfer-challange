@@ -63,7 +63,7 @@ public final class Application {
         Spark.after((req, res) -> res.type(JSON_CONTENT_TYPE));
         Spark.exception(TransferBaseException.class, (e, request, response) -> {
             response.status(e.getStatus());
-            response.type();
+            response.type(JSON_CONTENT_TYPE);
             response.body(JsonUtils.writeValueAsString(e.getDetail()));
             log.error("Error on processing {}", request.pathInfo());
         });
