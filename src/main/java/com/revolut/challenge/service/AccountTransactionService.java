@@ -40,10 +40,10 @@ public class AccountTransactionService {
      * @param transactionId transaction Id of transaction for make idempotent
      * @param transfer      transfer Id related to transaction
      */
-    public void createWithdrawTransaction(String accountNumber, BigDecimal amount, String transactionId, Long transfer) {
+    public void createWithdrawTransaction(DSLContext dslContext, String accountNumber, BigDecimal amount, String transactionId, Long transfer) {
         validateDuplicateTransaction(transactionId, TransactionType.WITHDRAW);
 
-        dataContext.transaction(dataConfiguration -> {
+        dslContext.transaction(dataConfiguration -> {
             var transactionCtx = DSL.using(dataConfiguration);
 
             //Lock account record to make concurrency safe!
@@ -78,6 +78,18 @@ public class AccountTransactionService {
      * @param accountNumber target number
      * @param amount        amount to withdraw
      * @param transactionId transaction Id of transaction for make idempotent
+     * @param transfer      transfer Id related to transaction
+     */
+    public void createWithdrawTransaction(String accountNumber, BigDecimal amount, String transactionId, Long transfer) {
+        createWithdrawTransaction(dataContext, accountNumber, amount, transactionId, transfer);
+    }
+
+    /**
+     * Make withdraw with given amount for input account
+     *
+     * @param accountNumber target number
+     * @param amount        amount to withdraw
+     * @param transactionId transaction Id of transaction for make idempotent
      */
     public void createWithdrawTransaction(String accountNumber, BigDecimal amount, String transactionId) {
         createWithdrawTransaction(accountNumber, amount, transactionId, null);
@@ -91,10 +103,10 @@ public class AccountTransactionService {
      * @param transactionId transaction Id of transaction for make idempotent
      * @param transfer      transfer Id related to transaction
      */
-    public void createDepositTransaction(String accountNumber, BigDecimal amount, String transactionId, Long transfer) {
+    public void createDepositTransaction(DSLContext dslContext, String accountNumber, BigDecimal amount, String transactionId, Long transfer) {
         validateDuplicateTransaction(transactionId, TransactionType.DEPOSIT);
 
-        dataContext.transaction(dataConfiguration -> {
+        dslContext.transaction(dataConfiguration -> {
             var transactionCtx = DSL.using(dataConfiguration);
 
             //Lock account record to make concurrency safe!
@@ -125,6 +137,18 @@ public class AccountTransactionService {
      * @param accountNumber target number
      * @param amount        amount to deposit
      * @param transactionId transaction Id of transaction for make idempotent
+     * @param transfer      transfer Id related to transaction
+     */
+    public void createDepositTransaction(String accountNumber, BigDecimal amount, String transactionId, Long transfer) {
+        createDepositTransaction(dataContext, accountNumber, amount, transactionId, transfer);
+    }
+
+    /**
+     * Make deposit with given amount for input account
+     *
+     * @param accountNumber target number
+     * @param amount        amount to deposit
+     * @param transactionId transaction Id of transaction for make idempotent
      */
     public void createDepositTransaction(String accountNumber, BigDecimal amount, String transactionId) {
         createDepositTransaction(accountNumber, amount, transactionId, null);
@@ -143,6 +167,7 @@ public class AccountTransactionService {
 
     /**
      * get All transaction of given account number
+     *
      * @param accountNumber transaction number
      * @return transaction list
      */

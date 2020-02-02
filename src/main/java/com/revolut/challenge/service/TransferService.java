@@ -10,6 +10,8 @@ import com.revolut.challenge.model.enumeration.TransferStatusType;
 import com.revolut.challenge.repository.FinancialAccountRepository;
 import com.revolut.challenge.repository.TransferRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -19,11 +21,16 @@ public class TransferService {
     private final FinancialAccountRepository accountRepository;
     private final TransferRepository transferRepository;
     private final AccountTransactionService accountTransactionService;
+    private final DSLContext dslContext;
 
-    public TransferService(FinancialAccountRepository accountRepository, TransferRepository transferRepository, AccountTransactionService accountTransactionService) {
+    public TransferService(FinancialAccountRepository accountRepository,
+                           TransferRepository transferRepository,
+                           AccountTransactionService accountTransactionService,
+                           DSLContext dslContext) {
         this.accountRepository = accountRepository;
         this.transferRepository = transferRepository;
         this.accountTransactionService = accountTransactionService;
+        this.dslContext = dslContext;
     }
 
     /**
@@ -53,29 +60,32 @@ public class TransferService {
                 .createDatetime(LocalDateTime.now())
                 .build());
 
-        log.info("Create transfer from account {} to account {} with amount {}.", fromAccountNumber, toAccountNumber, amount);
+        dslContext.transaction(configuration -> {
+            var transactionCtx = DSL.using(configuration);
 
-        try {
-            accountTransactionService.createWithdrawTransaction(fromAccountNumber, amount, transactionId, transferRecord.getId());
-        } catch (InsufficientBalanceException e) {
-            log.info("Could not transfer from account {} because amount {} is more than account balance ({}).", fromAccountNumber, amount, fromAccount.getBalance());
-            transferRepository.updateState(transferRecord.getId(), TransferStatusType.INSUFFICIENT_BALANCE);
-            throw e;
-        } catch (Exception e) {
-            log.warn("Error in transfer from account {} to account {} with amount {}.", fromAccountNumber, toAccountNumber, amount);
-            transferRepository.updateState(transferRecord.getId(), TransferStatusType.ERROR);
-            throw e;
-        }
+            log.info("Create transfer from account {} to account {} with amount {}.", fromAccountNumber, toAccountNumber, amount);
 
-        try {
-            accountTransactionService.createDepositTransaction(toAccountNumber, amount, transactionId, transferRecord.getId());
-            transferRepository.updateState(transferRecord.getId(), TransferStatusType.DONE);
-            log.info("Successfully transfer from account {} to account {} with amount {}.", fromAccountNumber, toAccountNumber, amount);
-        } catch (Exception e) {
-            log.warn("Error in transfer from account {} to account {} with amount {}.", fromAccountNumber, toAccountNumber, amount);
-            transferRepository.updateState(transferRecord.getId(), TransferStatusType.ERROR);
-            throw e;
-        }
+            try {
+                accountTransactionService.createWithdrawTransaction(transactionCtx, fromAccountNumber, amount, transactionId, transferRecord.getId());
+            } catch (InsufficientBalanceException e) {
+                log.info("Could not transfer from account {} because amount {} is more than account balance ({}).", fromAccountNumber, amount, fromAccount.getBalance());
+                transferRepository.updateState(transferRecord.getId(), TransferStatusType.INSUFFICIENT_BALANCE);
+                throw e;
+            } catch (Exception e) {
+                log.warn("Error in transfer from account {} to account {} with amount {}.", fromAccountNumber, toAccountNumber, amount);
+                transferRepository.updateState(transferRecord.getId(), TransferStatusType.ERROR);
+                throw e;
+            }
+
+            try {
+                accountTransactionService.createDepositTransaction(transactionCtx, toAccountNumber, amount, transactionId, transferRecord.getId());
+                transferRepository.updateState(transferRecord.getId(), TransferStatusType.DONE);
+                log.info("Successfully transfer from account {} to account {} with amount {}.", fromAccountNumber, toAccountNumber, amount);
+            } catch (Exception e) {
+                log.warn("Error in transfer from account {} to account {} with amount {}.", fromAccountNumber, toAccountNumber, amount);
+                transferRepository.updateState(transferRecord.getId(), TransferStatusType.ERROR);
+                throw e;
+            }
+        });
     }
-
 }

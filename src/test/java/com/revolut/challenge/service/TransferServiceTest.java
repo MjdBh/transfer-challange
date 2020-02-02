@@ -29,7 +29,7 @@ public class TransferServiceTest extends BaseIT {
     private static final TransferRepository transferRepository = new TransferRepository(dataContext);
 
     private static final AccountTransactionService accountTransactionServiceTest = new AccountTransactionService(accountTransactionRepositoryTest, financialAccountRepositoryTest, dataContext);
-    private static final TransferService transferServiceTest = new TransferService(financialAccountRepositoryTest, transferRepository, accountTransactionServiceTest);
+    private static final TransferService transferServiceTest = new TransferService(financialAccountRepositoryTest, transferRepository, accountTransactionServiceTest, dataContext);
 
     @BeforeAll
     public static void prepareData() {

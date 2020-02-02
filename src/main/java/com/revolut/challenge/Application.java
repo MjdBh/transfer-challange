@@ -36,7 +36,7 @@ public final class Application {
     private static final Integer MIN_THREAD_SIZE = Integer.valueOf(System.getProperty("http-min-thread", "3"));
     private static final Integer MAX_THREAD_SIZE = Integer.valueOf(System.getProperty("http-max-thread", "10"));
     private static final Integer IDEL_TIME_MILLIS = Integer.valueOf(System.getProperty("http-timeout", "1000"));
-    public static  final String JSON_CONTENT_TYPE="application/json";
+    public static final String JSON_CONTENT_TYPE = "application/json";
 
     public Application(final DataSource dataSource, String port) {
 
@@ -52,7 +52,7 @@ public final class Application {
         //  Initializing service beans
         var financialAccountService = new FinancialAccountService(financialAccountRepository);
         var accountTransactionService = new AccountTransactionService(accountTransactionRepository, financialAccountRepository, dataContext);
-        var transferService = new TransferService(financialAccountRepository, transferRepository, accountTransactionService);
+        var transferService = new TransferService(financialAccountRepository, transferRepository, accountTransactionService, dataContext);
 
         var accountController = new AccountController(financialAccountService, validator);
         var transactionController = new TransactionController(accountTransactionService, validator);
