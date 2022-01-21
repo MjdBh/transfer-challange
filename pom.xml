@@ -13,7 +13,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <h2.version>1.4.199</h2.version>
+        <h2.version>2.1.210</h2.version>
         <lombok.version>1.18.10</lombok.version>
         <jooq.version>3.12.3</jooq.version>
         <liquibase.version>3.4.1</liquibase.version>
