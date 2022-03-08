@@ -16,7 +16,7 @@
         <h2.version>1.4.199</h2.version>
         <lombok.version>1.18.10</lombok.version>
         <jooq.version>3.12.3</jooq.version>
-        <liquibase.version>3.4.1</liquibase.version>
+        <liquibase.version>4.8.0</liquibase.version>
         <log4j.version>2.13.0</log4j.version>
         <spark.version>2.9.1</spark.version>
         <jackson.version>2.10.2</jackson.version>
